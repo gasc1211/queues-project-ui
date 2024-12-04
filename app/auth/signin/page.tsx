@@ -38,7 +38,8 @@ export default function Signin() {
 
   const onSubmit = async (values: z.infer<typeof UserSignInSchema>) => {
     try {
-      await userSignIn(values);
+      const response = await userSignIn(values);
+      localStorage.setItem("idToken", response.idToken);
       router.push(`/home`);
     } catch (err) {
       const error = err as { message: string };
