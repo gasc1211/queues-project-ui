@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useState } from "react";
 import { userSignUp } from "@/app/api/handler";
-import router from "next/router";
+import { useRouter } from "next/navigation";
 
 const UserSignUpSchema = z.object({
   first_name: z.string().min(1, {
@@ -46,6 +46,7 @@ export default function Signup() {
   });
 
   const [error, setError] = useState("");
+  const router = useRouter();
 
   const onSubmit = async (values: z.infer<typeof UserSignUpSchema>) => {
     try {

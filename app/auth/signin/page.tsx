@@ -52,7 +52,7 @@ export default function Signin() {
       <Card className="[&>*]:mt-4 w-1/3 px-8 py-4">
         <h2 className="font-bold text-center text-2xl">Queues Project</h2>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="[&>*]:mt-4">
             <FormField control={form.control} name="email" render={({ field }) => (
               <FormItem>
                 <FormLabel>Email</FormLabel>

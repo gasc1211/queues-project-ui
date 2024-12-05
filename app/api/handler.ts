@@ -1,16 +1,6 @@
+import { User, UserSignUp, UserSignIn } from "@/utils/types";
 import { API_URL } from "../../utils/config";
-
-interface UserSignUp {
-  first_name: string;
-  last_name: string;
-  email: string;
-  password: string;
-}
-
-interface UserSignIn {
-  email: string;
-  password: string;
-}
+import { UserVerification } from '../../utils/types';
 
 export const userSignUp = async (user: UserSignUp) => {
   const response = await fetch(`${API_URL}/signup`, {
@@ -40,4 +30,37 @@ export const userSignIn = async (userCredentials: UserSignIn) => {
     throw new Error('User sign in failed...')
 
   return response.json();
+}
+
+export const userHomePage = async (token: string) => {
+
+  const response = await fetch(`${API_URL}/user`, {
+    method: "GET",
+    headers: {
+      "Authorization": `Bearer ${token}`
+    }
+  });
+
+  if (!response.ok)
+    throw new Error("Failed to fetch user data...");
+
+  console.log(response.body);
+  const userData = response.body as unknown as User;
+  return userData;
+}
+
+export const userVerification = async (data: UserVerification) => {
+
+  const response = await fetch(`${API_URL}/user/verification`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data)
+  });
+
+  if (!response.ok)
+    throw new Error("Failed to verify user account...")
+
+  return response.ok;
 }
