@@ -1,12 +1,12 @@
 #! /bin/bash
 
 # If not done before, log into azure cli and into your container registry 
-# az login
-# az acr login --name acraccountingsystemdev
+az login
+az acr login --name acraccountingsystemdev
 
 AZURE_CONTAINER_REGISTRY="acraccountingsystemdev"
 AZURE_CONTAINER_NAME="ui-accountingsystem"
-CURRENT_VERSION="0.0.2"
+CURRENT_VERSION="0.0.8"
 
 docker build --platform linux/amd64 -t $AZURE_CONTAINER_NAME-dev:latest . --load
 

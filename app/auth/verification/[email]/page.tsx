@@ -33,7 +33,7 @@ export default function VerifyAccount({ params }: { params: Promise<{ email: str
     });
 
     if (isVerified)
-      router.push("/home");
+      router.push("/auth/signin");
   }
 
   return (

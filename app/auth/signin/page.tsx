@@ -10,6 +10,7 @@ import {
   FormItem,
   FormDescription,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -19,8 +20,20 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 const UserSignInSchema = z.object({
-  email: z.string(),
+  email: z.string()
+    .refine((value) => {
+      const sqlInjectionPattern = /['"--;]|\/\*|\*\//; // Match SQL-sensitive characters or sequences
+      return !sqlInjectionPattern.test(value);
+    }, {
+      message: "Input contains forbidden characters or patterns.",
+    }),
   password: z.string()
+    .refine((value) => {
+      const sqlInjectionPattern = /['"--;]|\/\*|\*\//; // Match SQL-sensitive characters or sequences
+      return !sqlInjectionPattern.test(value);
+    }, {
+      message: "Input contains forbidden characters or patterns.",
+    }),
 })
 
 export default function Signin() {
@@ -58,6 +71,7 @@ export default function Signin() {
                 <FormLabel>Email</FormLabel>
                 <Input placeholder="user@example.com" type="email" {...field} />
                 <FormDescription>Enter your account email</FormDescription>
+                <FormMessage />
               </FormItem>
             )}
             />
@@ -66,6 +80,7 @@ export default function Signin() {
                 <FormLabel>Password</FormLabel>
                 <Input placeholder="********" type="password" {...field} />
                 <FormDescription>Enter your account password</FormDescription>
+                <FormMessage />
               </FormItem>
             )}
             />

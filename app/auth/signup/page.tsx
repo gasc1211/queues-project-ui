@@ -10,6 +10,7 @@ import {
   FormItem,
   FormDescription,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -19,18 +20,61 @@ import { userSignUp } from "@/app/api/handler";
 import { useRouter } from "next/navigation";
 
 const UserSignUpSchema = z.object({
-  first_name: z.string().min(1, {
-    message: "First name can't be empty"
-  }),
-  last_name: z.string().min(1, {
-    message: "Last name can't be empty"
-  }),
-  email: z.string().min(1, {
-    message: "Email is not optional"
-  }).email(),
-  password: z.string().min(8, {
-    message: "Password needs to be at least 8 characters long"
-  })
+  first_name: z.string()
+    .min(2, {
+      message: "First name can't be empty"
+    })
+    .refine((value) => {
+      const sqlInjectionPattern = /['"--;]|\/\*|\*\//; // Match SQL-sensitive characters or sequences
+      return !sqlInjectionPattern.test(value);
+    }, {
+      message: "Input contains forbidden characters or patterns.",
+    }),
+  last_name: z.string()
+    .min(2, {
+      message: "Last name can't be empty"
+    })
+    .refine((value) => {
+      const sqlInjectionPattern = /['"--;]|\/\*|\*\//; // Match SQL-sensitive characters or sequences
+      return !sqlInjectionPattern.test(value);
+    }, {
+      message: "Input contains forbidden characters or patterns.",
+    }),
+  email: z.string()
+    .email({
+      message: "Email is not optional"
+    })
+    .refine((value) => {
+      const sqlInjectionPattern = /['"--;]|\/\*|\*\//; // Match SQL-sensitive characters or sequences
+      return !sqlInjectionPattern.test(value);
+    }, {
+      message: "Input contains forbidden characters or patterns.",
+    }),
+  password: z.string()
+    .min(8, {
+      message: "Password needs to be at least 8 characters long"
+    })
+    .regex(/[A-Z]/, {
+      message: "Password should have at least one uppercas character"
+    })
+    .regex(/[a-z]/, {
+      message: "Password should have at least one lowecase character"
+    })
+    .regex(/[\W_]/, {
+      message: "Password should have at least one special character"
+    })
+    .refine((value) => {
+      const numericSequencePattern = /(012|123|234|345|456|567|678|789|890)/;
+      return !numericSequencePattern.test(value);
+    }, {
+      message: "Your password should not have a sequence of numbers"
+    })
+    .refine((value) => {
+      const sqlInjectionPattern = /['"--;]|\/\*|\*\//; // Match SQL-sensitive characters or sequences
+      return !sqlInjectionPattern.test(value);
+    }, {
+      message: "Input contains forbidden characters or patterns.",
+    }),
 })
 
 export default function Signup() {
@@ -69,6 +113,7 @@ export default function Signup() {
                 <FormLabel>First Name</FormLabel>
                 <Input placeholder="John" type="text" {...field} />
                 <FormDescription>Enter your first name</FormDescription>
+                <FormMessage />
               </FormItem>
             )}
             />
@@ -77,6 +122,7 @@ export default function Signup() {
                 <FormLabel>Last Name</FormLabel>
                 <Input placeholder="Doe" type="text" {...field} />
                 <FormDescription>Enter your last name</FormDescription>
+                <FormMessage />
               </FormItem>
             )}
             />
@@ -85,6 +131,7 @@ export default function Signup() {
                 <FormLabel>Email</FormLabel>
                 <Input placeholder="user@example.com" type="email" {...field} />
                 <FormDescription>Enter your account email</FormDescription>
+                <FormMessage />
               </FormItem>
             )}
             />
@@ -93,6 +140,7 @@ export default function Signup() {
                 <FormLabel>Password</FormLabel>
                 <Input placeholder="********" type="password" {...field} />
                 <FormDescription>Enter your account password</FormDescription>
+                <FormMessage />
               </FormItem>
             )}
             />
