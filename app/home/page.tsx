@@ -3,34 +3,51 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { userHomePage } from "../api/handler";
 import { User } from "../../utils/types";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+
+const formatter = new Intl.RelativeTimeFormat('en', {
+  numeric: 'auto'
+});
 
 export default function Home() {
 
+  let idToken: string | null = "";
   const router = useRouter();
   const [user, setUser] = useState<User>();
 
-  const idToken = localStorage.getItem("idToken");
+  if (typeof window !== "undefined")
+    idToken = localStorage.getItem("idToken");
 
   useEffect(() => {
 
-    if (!idToken) {
+    if (!idToken)
       router.push("/auth/signin");
-      return;
-    }
 
     const fetchUserData = async () => {
-      const userData = await userHomePage(idToken);
+      const userData = await userHomePage(idToken!);
       setUser(userData);
     }
-
     fetchUserData();
 
-  }, [router, idToken]);
+  }, [idToken, router]);
 
   return (
-    <main>
+    <main className="my-8 mx-12">
       <h1 className="font-bold text-xl">HomePage</h1>
-      {user && <p>{user.email}</p>}
+      {user &&
+        <div className="mt-8 p-4">
+          <p>
+            Welcome <strong>{`${user.first_name} ${user.last_name}`}</strong> (
+            {user.email}
+            )
+          </p>
+          <p>Your accout was created {formatter.format(Math.round((Date.now() - Date.parse(user.created_at)) / 3600000), 'hour')}.</p>
+          <Button variant={"secondary"} className="font-bold text-lg mt-4">
+            <Link href="/auth/signout">Sign Out</Link>
+          </Button>
+        </div>
+      }
     </main>
   );
 }

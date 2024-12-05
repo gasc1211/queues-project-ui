@@ -44,8 +44,7 @@ export const userHomePage = async (token: string) => {
   if (!response.ok)
     throw new Error("Failed to fetch user data...");
 
-  console.log(response.body);
-  const userData = response.body as unknown as User;
+  const userData = response.json() as unknown as User;
   return userData;
 }
 
@@ -58,9 +57,6 @@ export const userVerification = async (data: UserVerification) => {
     },
     body: JSON.stringify(data)
   });
-
-  if (!response.ok)
-    throw new Error("Failed to verify user account...")
 
   return response.ok;
 }
