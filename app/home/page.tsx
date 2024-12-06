@@ -5,6 +5,7 @@ import { userHomePage } from "../api/handler";
 import { User } from "../../utils/types";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { UserPosts } from "@/components/UserPosts";
 
 const formatter = new Intl.RelativeTimeFormat('en', {
   numeric: 'auto'
@@ -25,8 +26,15 @@ export default function Home() {
       router.push("/auth/signin");
 
     const fetchUserData = async () => {
-      const userData = await userHomePage(idToken!);
-      setUser(userData);
+      try {
+        const userData = await userHomePage(idToken!);
+        console.log(userData);
+        setUser(userData);
+      } catch (err) {
+        console.error(err);
+        localStorage.clear();
+        router.push("/auth/signin");
+      }
     }
     fetchUserData();
 
@@ -46,6 +54,7 @@ export default function Home() {
           <Button variant={"secondary"} className="font-bold text-lg mt-4">
             <Link href="/auth/signout">Sign Out</Link>
           </Button>
+          <UserPosts userId={user.user_id} token={idToken as string} />
         </div>
       }
     </main>

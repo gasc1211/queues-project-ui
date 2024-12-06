@@ -11,6 +11,7 @@ export interface UserSignIn {
 }
 
 export interface User {
+  user_id: number;
   first_name: string;
   last_name: string;
   email: string;
@@ -20,4 +21,9 @@ export interface User {
 export interface UserVerification {
   email: string;
   verification_code: number;
+}
+
+export interface Post {
+  post_id: number;
+  content: string;
 }

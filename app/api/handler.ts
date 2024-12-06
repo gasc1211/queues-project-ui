@@ -1,6 +1,7 @@
-import { User, UserSignUp, UserSignIn } from "@/utils/types";
-import { API_URL } from "../../utils/config";
+import { User, UserSignUp, UserSignIn, Post } from "@/utils/types";
+import { API_URL, GQL_URL } from "../../utils/config";
 import { UserVerification } from '../../utils/types';
+import { gql, GraphQLClient } from "graphql-request";
 
 export const userSignUp = async (user: UserSignUp) => {
   const response = await fetch(`${API_URL}/signup`, {
@@ -60,3 +61,42 @@ export const userVerification = async (data: UserVerification) => {
 
   return response.ok;
 }
+
+// Function to create a new GraphQL Client
+const createGraphQLClient = (token: string) => {
+  return new GraphQLClient(GQL_URL, {
+    headers: token ? {
+      Authorization: `Bearer ${token}`,
+    } : {},
+  });
+};
+
+// Get Posts from GraphQL Service
+export const getPosts = async (user_id: number, token: string): Promise<Post[]> => {
+  const graphQLClient = createGraphQLClient(token);
+
+  const query = gql`
+    query Users($userId: Int) {
+        Users(user_id: $userId) {
+            posts {
+                post_id
+                content
+            }
+        }
+    }
+  `;
+
+  const variables = {
+    userId: user_id
+  };
+
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const response: any = await graphQLClient.request(query, variables);
+    console.log(response);
+    return response.Users[0].posts as unknown as Post[];
+  } catch (error) {
+    console.error('Error fetching user posts:', error);
+    throw new Error('Error obtaining posts');
+  }
+};
