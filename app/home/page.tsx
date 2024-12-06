@@ -50,7 +50,7 @@ export default function Home() {
             {user.email}
             )
           </p>
-          <p>Your accout was created {formatter.format(Math.round((Date.now() - Date.parse(user.created_at)) / 3600000), 'hour')}.</p>
+          <p>Your accout was created {formatter.format(Math.round((Date.parse(user.created_at) - Date.now()) / 3600000), 'hour')}.</p>
           <Button variant={"secondary"} className="font-bold text-lg mt-4">
             <Link href="/auth/signout">Sign Out</Link>
           </Button>

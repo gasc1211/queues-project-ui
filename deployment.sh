@@ -6,7 +6,7 @@ az acr login --name acraccountingsystemdev
 
 AZURE_CONTAINER_REGISTRY="acraccountingsystemdev"
 AZURE_CONTAINER_NAME="ui-accountingsystem"
-CURRENT_VERSION="0.0.8"
+CURRENT_VERSION="0.0.9"
 
 docker build --platform linux/amd64 -t $AZURE_CONTAINER_NAME-dev:latest . --load
 
